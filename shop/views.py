@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Product
+from .models import Product,Contact
 from math import ceil
 
 # Create your views here.
@@ -29,20 +29,29 @@ def about(request):
 
 
 def contact(request):
-    return HttpResponse("We are in contact section")
+    if request.method=="POST":
+        name=request.POST.get("name","")
+        email=request.POST.get("email","")
+        phone=request.POST.get("phone","")
+        description=request.POST.get("description","")
+        contact=Contact(name=name,email=email,phone=phone,description=description)
+        contact.save()
+    return render(request, "shop/contact.html")
 
 
 def tracker(request):
-    return HttpResponse("We are in tracker section")
-
+    return render(request, "shop/tracker.html")
 
 def search(request):
-    return HttpResponse("We are in search section")
+    return render(request, "shop/search.html")
 
 
-def productview(request):
-    return HttpResponse("We are in productview section")
+def productview(request,myid):
+    #Fetch the product using id
+    productview = Product.objects.filter(id=myid)
+    print(productview)
+    return render(request, "shop/products.html",{'productview':productview[0]})
 
 
 def checkout(request):
-    return HttpResponse("We are in checkout section")
+    return render(request, "shop/checkout.html")
